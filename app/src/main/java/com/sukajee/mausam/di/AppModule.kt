@@ -1,5 +1,6 @@
 package com.sukajee.mausam.di
 
+import com.sukajee.mausam.BuildConfig
 import com.sukajee.mausam.data.api.WeatherApi
 import com.sukajee.mausam.data.repository.BaseRepository
 import com.sukajee.mausam.data.repository.WeatherRepository
@@ -11,9 +12,16 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
+import kotlin.math.log
 
 @Module
 object AppModule {
+
+    private val logLevel = if (BuildConfig.DEBUG) {
+        HttpLoggingInterceptor.Level.BODY
+    } else {
+        HttpLoggingInterceptor.Level.NONE
+    }
 
     @Singleton
     @Provides
@@ -23,13 +31,11 @@ object AppModule {
             .baseUrl("https://api.open-meteo.com/v1/")
             .client(
                 OkHttpClient().newBuilder()
-                    .addInterceptor(
-                        HttpLoggingInterceptor()
-                            .setLevel(HttpLoggingInterceptor.Level.BASIC)
-                    )
-                    .connectTimeout(100000L, TimeUnit.MILLISECONDS)
-                    .readTimeout(100000L, TimeUnit.MILLISECONDS)
-                    .writeTimeout(100000L, TimeUnit.MILLISECONDS).build()
+                    .addInterceptor(HttpLoggingInterceptor().setLevel(logLevel))
+                    .connectTimeout(10000L, TimeUnit.MILLISECONDS)
+                    .readTimeout(10000L, TimeUnit.MILLISECONDS)
+                    .writeTimeout(10000L, TimeUnit.MILLISECONDS)
+                    .build()
             )
             .build()
     }

@@ -7,11 +7,11 @@ import retrofit2.Response
 import javax.inject.Inject
 
 class WeatherRepository @Inject constructor(
-    val weatherApi: WeatherApi
+    private val weatherApi: WeatherApi
 ): BaseRepository {
 
     override suspend fun getWeatherData(latitude: Double, longitude: Double): Response<WeatherData> {
-        Log.d("SomeImportantTag", "getWeatherData: with lattitude: $latitude and longitude: $longitude ")
+        Log.d("SomeImportantTag", "getWeatherData: with latitude: $latitude and longitude: $longitude ")
         return weatherApi.getWeatherData(
             latitude = latitude,
             longitude = longitude,
